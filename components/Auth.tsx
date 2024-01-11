@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View, Text } from 'react-native'
 import { supabase } from '../lib/supabase'
 import { Button, Input } from 'react-native-elements'
 
@@ -36,6 +36,11 @@ export default function Auth() {
 
   return (
     <View style={styles.container}>
+
+      <View>
+        <Text>Czech Star</Text>
+        <Text>Let's join Czech Community</Text>
+      </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input
           label="Email"
