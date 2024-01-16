@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // backgroundColor: '#CED2C2',
         backgroundColor: '#ECDDD0',
+        // backgroundColor: '#92b1b6',
     },
     text: {
         color: '#ffffff',
@@ -16,8 +17,9 @@ const styles = StyleSheet.create({
     btn:{
         // backgroundColor: '#4A686A
         // backgroundColor: '#35455D',
-        backgroundColor: '#416191',
+        // backgroundColor: '#416191',
         // backgroundColor: 'orange',
+        backgroundColor: '#00bf30',
         padding: 10,
         borderRadius: 10,
         margin: 10,
