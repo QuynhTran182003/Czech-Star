@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 import styles from "../style";
 
 function Lessons({navigation, route }) {
-    const { id } = route.params;
+    const { id , name} = route.params;
     const [file, setFile] = useState<{ publicUrl: string } | null>(null);
     const [lessons, setLessons] = useState([]);
     const windowWidth = Dimensions.get('window').width;
@@ -28,7 +28,7 @@ function Lessons({navigation, route }) {
         <SafeAreaView style={styles.template}>
             <View>
                 <TouchableOpacity>
-                    <Text>A list of lessions</Text>
+                    <Text>A list of lessions {id} {name}</Text>
                     {/* {file && <Image source={{ uri: file.publicUrl }} style={[styles.image, {width: windowWidth}]} resizeMode="contain" />}
                     {showImage && file && (
                     <Image

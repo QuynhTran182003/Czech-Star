@@ -1,24 +1,87 @@
-import { TouchableOpacity, SafeAreaView, StyleSheet, Text, View , Image, Dimensions, ScrollView} from "react-native";
-import Swiper from 'react-native-swiper';
-import React, { useEffect, useState } from "react";
+import { FlatList, TouchableOpacity, SafeAreaView, StyleSheet, Text, View , Image, Dimensions, Animated, PanResponder} from "react-native";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 import styles from "../style";
-import Animated, {useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, withSpring, withTiming} from "react-native-reanimated";
-import { PanGestureHandler, PanGestureHandlerGestureEvent, GestureHandlerRootView } from "react-native-gesture-handler";
+import {useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, withSpring, withTiming} from "react-native-reanimated";
+// import { PanGestureHandler, PanGestureHandlerGestureEvent, GestureHandlerRootView } from "react-native-gesture-handler";
+// import { screensEnabled } from "react-native-screens";
+import MyCard from "./MyCard"
 
-type ContextType = {
-    translateX: number;
-    translateY: number;
-}
+import Footer from './footer';
+
+
 const SIZE_CARD = 150;
-const CIRCLE_RADIUS = SIZE_CARD * 1.1;
+const CIRCLE_RADIUS = SIZE_CARD * 0.3;
+const {width, height} = Dimensions.get('screen');
 
-function Lesson({route}) {
-    const { id } = route.params;
+function Lesson({navigation, route}) {
+    const { id, name } = route.params;
     const [file, setFile] = useState<{ publicUrl: string } | null>(null);
-    const windowWidth = Dimensions.get('window').width;
     const [showImage, setShowImage] = useState(false);
+    const [listCards, setListCards] = useState([]);
+
+    const translateX = useSharedValue(0);
+    const translateY = useSharedValue(0);
+
+    const swipe = useRef(new Animated.ValueXY()).current;
+    const titlSign = useRef(new Animated.Value(1)).current;
+    const panResponder = PanResponder.create({
+        // Allow pan responder to activate
+       onMoveShouldSetPanResponder: ()=>true,
+   
+        // Handle card movement while dragging
+       onPanResponderMove: (_, {dx, dy, y0})=>{
+         swipe.setValue({x: dx, y: dy});
+         titlSign.setValue(y0 > (height * 0.9) / 2 ? 1 : -1)
+       },
+   
+       // Handle card release after dragging
+       onPanResponderRelease: (_, { dx, dy })=>{
+         const direction = Math.sign(dx);
+         const isActionActive = Math.abs(dx) > 100;
+   
+         if(isActionActive){
+           // Swipe the card off the screen
+           Animated.timing(swipe, {
+             duration: 100,
+             toValue: {
+               x: direction * 500,
+               y: dy
+             },
+             useNativeDriver: true
+           }).start(removeTopCard);
+   
+         }else{
+           // Return the card to its original position
+           Animated.spring(swipe, {
+             toValue: {
+               x: 0,
+               y: 0
+             },
+             useNativeDriver: true,
+             friction: 5
+           }).start()
+         }
+       }
+     })
+
+     const removeTopCard = useCallback(()=>{
+        setListCards((prevState)=>prevState.slice(1));
+        swipe.setValue({ x: 0, y: 0});
+      },[swipe]);
+    
+      // handle user choice (left or right swipe)
+      const handleChoice = useCallback((direction)=>{
+        Animated.timing(swipe.x, {
+          toValue: direction  * 500,
+          duration: 400,
+          useNativeDriver: true
+        }).start(removeTopCard);
+    
+      },[removeTopCard,swipe.x]);
+
     useEffect(() => {
+        getCardsFromDB(id);
         getFile();
     }, []);
 
@@ -51,42 +114,19 @@ function Lesson({route}) {
         }
         return "";
     };
-
-
     
-    const translateX = useSharedValue(0);
-    const translateY = useSharedValue(0);
 
-    const panGestureEvent = useAnimatedGestureHandler<PanGestureHandlerGestureEvent, ContextType>(
-        {
-            onStart: (event: any, context: any) => {
-                context.translateX = translateX.value;
-                context.translateY = translateY.value;
-            },
-            onActive: (event: any, context:any) => {
-                translateX.value = context.translateX + event.translationX;
-                translateY.value = context.translateY + event.translationY;
-            },
-            onEnd: (event: any, context:any) => {
-                const distance = Math.sqrt(translateX.value * translateX.value + translateY.value * translateY.value);
-                const throwDuration = 400; // Adjust this value to control the throw duration
+    const getCardsFromDB = async (lesson_id: any) => {
+        let { data: cards, error } = await supabase
+          .from('card')
+          .select('czech, vietnamese')
+          .eq('lesson_id', lesson_id);
+          
+        // console.log("card", cards);
+        setListCards(cards);
+    };
 
-                if(distance < CIRCLE_RADIUS){
-                    translateX.value = withSpring(0);
-                    translateY.value = withSpring(0);
-                } else{
-                    if(translateX.value > 0){
-                        translateX.value = withTiming(translateX.value * 500, { duration: throwDuration });
-                        translateY.value = withTiming(translateY.value, { duration: throwDuration });
-                    } else{
-                        translateX.value = withTiming(translateX.value* -500, { duration: throwDuration });
-                        translateY.value = withTiming(translateY.value, { duration: throwDuration });
-                    }
-                }
-            },
-        }
-    ); 
-
+        
     const rstyle = useAnimatedStyle(() => {
         return {
           transform: [
@@ -98,47 +138,31 @@ function Lesson({route}) {
 
     return (
         <SafeAreaView style={styles.template}>
-            {/* <Swiper showsButtons={false}>
-                <View style={styleCustom.slide}>
-                    <Text style={styleCustom.meaning}>SWIPEEEE</Text>
-                </View>
-                <View style={styleCustom.slide}>
-                    <View style={styleCustom.card}>
-                        <Text style={styleCustom.meaning}>CZ</Text>
-                        <Text style={styleCustom.meaning}>VN</Text>
-                    </View>
-                </View>
-                <View style={styleCustom.slide}>
-                    <View style={styleCustom.card}>
-                        <Text style={styleCustom.meaning}>CZ</Text>
-                        <Text style={styleCustom.meaning}>VN</Text>
-                    </View>
-                </View>
-                <View style={styleCustom.slide}>
-                    <View style={styleCustom.card}>
-                        <Text style={styleCustom.meaning}>CZ</Text>
-                        <Text style={styleCustom.meaning}>VN</Text>
-                    </View>
-                </View>
-            </Swiper> */}
+            <Text>{id} - {name}</Text>
+            {
+                listCards.map(({czech, vietnamese, picture}, index) => {
+                    const isFirst = index === 0;
+                    const dragHandlers = isFirst ? panResponder.panHandlers : {};
+                    return (
+                        <MyCard 
+                            key={czech}
+                            czech={czech}
+                            vietnamese={vietnamese}
+                            picture={picture}
+                            isFirst={isFirst}
+                            swipe={swipe}
+                            titlSign={titlSign}
+                            {... dragHandlers}
+                        />
+                    )
+                }
+                ).reverse()
+            }
 
-            <GestureHandlerRootView style={styleCustom.container}>
-
-                <View style={styleCustom.container}>
-                <View style={styleCustom.circle}>
-
-                    <PanGestureHandler onGestureEvent={panGestureEvent}>
-                        <Animated.View style={[styleCustom.card, rstyle]}>
-                            <Text style={styleCustom.meaning}>Jeden/ Jedna / Jedno</Text>
-                            <Text style={styleCustom.meaning}>Mot</Text>
-                        </Animated.View>
-                    </PanGestureHandler>
-                    </View>
-
-                </View>
-            </GestureHandlerRootView>
-
-            <View style={styleCustom.btnContainer}>
+            
+            {/* <Footer handleChoice={handleChoice} /> */}
+        
+            {/* <View style={styleCustom.btnContainer}>
                 <View style={[styles.paddingX, styleCustom.btnContainer]}>
                     <Text style={[styles.bold, styles.paddingX, styles.marginY]}>Attachment</Text>
                     <TouchableOpacity onPress={handleImagePress}>
@@ -156,7 +180,7 @@ function Lesson({route}) {
                 <TouchableOpacity style={styles.btn}>
                     <Text style={styles.text}>Practice Now</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </SafeAreaView>
     );
 }
@@ -221,3 +245,5 @@ const styleCustom = StyleSheet.create({
 });
 
 export default Lesson;
+
+
