@@ -56,20 +56,21 @@ const MyCard = ({ czech, vietnamese, picture, isFirst, swipe, titlSign, ...rest}
            </Fragment>
         )
     },[rememberOpacity, reviseOpacity])
-    
+
+    const imagePath = `../../assets/icons/${picture}.png`;
+
     return (
         <Animated.View style={[
             styles.container,
             isFirst && animatedCardStyle
             ]} {...rest}>
             {/* <Image source={require('../assets/icons/vietnam.png')} /> */}
-            <Image source={require('../../assets/icons/jeden.png')}  style={styles.images}/>
+            <Image source={require(imagePath)} style={styles.images}/>
             {/* <Image source={require('../assets/adaptive-icon.png')} style={styles.images} /> */}
             <View style={styles.whiteBg}>
                 <View style={styles.row}>
                     <Image source={require('../../assets/icons/czech-republic.png')} />
                     <Text> Czech: {czech}</Text>
-                    {/* <Text> .../assets/icons/{picture}.png</Text> */}
                 </View>
 
                 <View style={styles.row}>
@@ -78,6 +79,8 @@ const MyCard = ({ czech, vietnamese, picture, isFirst, swipe, titlSign, ...rest}
                 </View>
 
             </View>
+                <Text>{imagePath}</Text>
+
             {isFirst && renderChoice()}
         </Animated.View>
     );
