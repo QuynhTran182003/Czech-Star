@@ -5,11 +5,11 @@ import React, { useState, useEffect } from 'react'
 import { View , Text, Button, SafeAreaView, FlatList} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LevelList from './components/Levels'
-import Units from './components/Units'
-import Lessons from './components/Lessons'
-import Lesson from './components/Lesson'
-import Auth from './components/Auth'
+import LevelList from './screens/Levels'
+import Units from './screens/Units'
+import Lessons from './screens/Lessons'
+import Lesson from './screens/Lesson'
+import Auth from './screens/Auth'
 
 const Stack = createNativeStackNavigator();
 

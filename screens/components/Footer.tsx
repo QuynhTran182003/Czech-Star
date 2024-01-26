@@ -19,11 +19,7 @@ const Footer = ({ handleChoice }) => {
               size={24}
               color={COLORS.revise}
               onPress={() => handleChoice(-1)} style={undefined}/>  
-      <Button
-              name="star"
-              size={24}
-              color={COLORS.star}
-              style={{ height: 40, width: 40 }} onPress={undefined}/>
+      
       <Button
               name="heart"
               size={24}
