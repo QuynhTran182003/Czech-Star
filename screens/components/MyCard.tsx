@@ -4,6 +4,7 @@ import React, { Fragment, useCallback} from 'react';
 
 // import Animated from 'react-native-reanimated';
 import Choice from './Choice';
+import { BackgroundImage } from './Image';
 
 
 const {width, height} = Dimensions.get('screen');
@@ -57,24 +58,30 @@ const MyCard = ({ czech, vietnamese, picture, isFirst, swipe, titlSign, ...rest}
         )
     },[rememberOpacity, reviseOpacity])
 
-    const imagePath = `../../assets/icons/${picture}.png`;
-
+    const imagePath = BackgroundImage.GetImage(`${picture}.png`);
     return (
         <Animated.View style={[
             styles.container,
             isFirst && animatedCardStyle
             ]} {...rest}>
-            {/* <Image source={require('../assets/icons/vietnam.png')} /> */}
-            <Image source={require(imagePath)} style={styles.images}/>
+                <View style={styles.imgContainer}>
+
+                    <Image source={imagePath} style={styles.images} />
+
+                </View>
+            {/* <Image source={require(imagePath)} style={styles.images}/> */}
             {/* <Image source={require('../assets/adaptive-icon.png')} style={styles.images} /> */}
             <View style={styles.whiteBg}>
                 <View style={styles.row}>
-                    <Image source={require('../../assets/icons/czech-republic.png')} />
+                    {/* <Image source={require('../../assets/icons/czech-republic.png')} /> */}
+                    <Image source={BackgroundImage.GetImage('czech-republic.png')} />
                     <Text> Czech: {czech}</Text>
                 </View>
 
                 <View style={styles.row}>
-                    <Image source={require('../../assets/icons/vietnam.png')} />
+                    {/* <Image source={require('../../assets/icons/vietnam.png')} /> */}
+                    <Image source={BackgroundImage.GetImage('vietnam.png')} />
+
                     <Text> Vietnamese: {vietnamese}</Text>
                 </View>
 
@@ -92,8 +99,14 @@ const styles = StyleSheet.create({
         top: 25,
     },
     images: {
-        width: width*0.9,
-        height: height*0.5,
+        // width: width,
+        // height: height * 0.4,
+    },
+    imgContainer: {
+        padding: 20,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     row: {
         flexDirection: 'row',

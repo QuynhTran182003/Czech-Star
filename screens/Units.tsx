@@ -4,9 +4,10 @@ import { supabase } from "../lib/supabase";
 import styles from "../style";
 
 
-import calendar_white from '../assets/icons/calendar_white.png';
-import numbers_white from '../assets/icons/numbers_white.png';
-import favicon from '../assets/icons/favicon.png';
+// import calendar_white from '../assets/icons/calendar_white.png';
+// import numbers_white from '../assets/icons/numbers_white.png';
+// import favicon from '../assets/icons/favicon.png';
+import { BackgroundImage } from "./components/Image";
 
 
 function Units({navigation, route}) {
@@ -27,11 +28,14 @@ function Units({navigation, route}) {
         setUnits(units);
     };
 
-    const iconImages = {
-        calendar_white: calendar_white,
-        numbers_white: numbers_white,
-        favicon: favicon,
-    };
+    // const iconImages = {
+    //     calendar_white: calendar_white,
+    //     numbers_white: numbers_white,
+    //     favicon: favicon,
+    // };
+
+    // const iconPath = BackgroundImage.GetImage(`${picture}.png`);
+
 
     return (
         <SafeAreaView style={styles.template}>
@@ -46,8 +50,9 @@ function Units({navigation, route}) {
                                 onPress={() => navigation.navigate('Lessons', { id:item.id, name: item.name })}
                             >
                                 <View style={[styleCustom.row]}>
-                                    <Image source={iconImages[item.icon]} style={[styleCustom.icon, styles.marginX]}/>
-
+                                    {/* <Image source={iconImages[item.icon]} style={[styleCustom.icon, styles.marginX]}/> */}
+                                    <Image source={BackgroundImage.GetImage(`${item.icon}.png`)} style={[styleCustom.icon, styles.marginX]}/>
+                                    
                                     <Text style={[styles.text]}>{item.id} {item.name}</Text>
                                 </View>
                             </TouchableOpacity>
