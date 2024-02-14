@@ -1,3 +1,4 @@
+
 import { FlatList, TouchableOpacity, SafeAreaView, StyleSheet, Text, View , Image, Dimensions, Animated, PanResponder} from "react-native";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "../lib/supabase";
@@ -151,7 +152,7 @@ function Lesson({navigation, route}) {
     // };
     
 
-    const getCardsFromDB = async (lesson_id: any) => {
+    async function getCardsFromDB(lesson_id: any) {
         let { data: cards, error } = await supabase
           .from('card')
           .select('czech, vietnamese, picture')
@@ -192,32 +193,12 @@ function Lesson({navigation, route}) {
                 }
                 ).reverse()
             }
-
-            
-            {/* {<Footer handleChoice={handleChoice} />} */}
-        
-            {/* <View style={styleCustom.btnContainer}>
-                <View style={[styles.paddingX, styleCustom.btnContainer]}>
-                    <Text style={[styles.bold, styles.paddingX, styles.marginY]}>Attachment</Text>
-                    <TouchableOpacity onPress={handleImagePress}>
-                        <Text style={[styles.underline, styles.padding2X]}>{getFileName()}</Text>
-                        {showImage && file && (
-                            <Image
-                                source={{ uri: file.publicUrl }}
-                                style={[styles.image, { width: windowWidth }]}
-                                resizeMode="contain"
-                            />
-                        )}
-                    </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity style={styles.btn}>
-                    <Text style={styles.text}>Practice Now</Text>
-                </TouchableOpacity>
-            </View> */}
             {
                 showPracticeButton && (
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity 
+                style={styles.btn}
+                onPress={() => navigation.navigate('PracticeLesson', { lessonid: id,lessonname: name })}
+                >
                     <Text style={styles.text}>Practice Now</Text>
                 </TouchableOpacity>)
             }

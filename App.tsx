@@ -9,6 +9,7 @@ import LevelList from './screens/Levels'
 import Units from './screens/Units'
 import Lessons from './screens/Lessons'
 import Lesson from './screens/Lesson'
+import PracticeLesson from './screens/PracticeLesson'
 import Auth from './screens/Auth'
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +37,7 @@ export default function App() {
         <Stack.Screen name="Units" component={Units}/>
         <Stack.Screen name="Lessons" component={Lessons}/>
         <Stack.Screen name="Lesson" component={Lesson}/>
+        <Stack.Screen name="PracticeLesson" component={PracticeLesson}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -22,7 +22,6 @@ function Lessons({navigation, route }) {
         setLessons(lessons)
         ;
     }
-
     
     return (
         <SafeAreaView style={styles.template}>
