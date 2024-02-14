@@ -21,7 +21,7 @@ function Lesson({navigation, route}) {
     const [listCards, setListCards] = useState([]);
     const [showPracticeButton, setShowPracticeButton] = useState(false);
     const [initialCardCount, setInitialCardCount] = useState(0);
-    let remember = 0;
+    const [remember, setRemember] = useState(0);
 
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
@@ -29,15 +29,31 @@ function Lesson({navigation, route}) {
     const swipe = useRef(new Animated.ValueXY()).current;
     const titlSign = useRef(new Animated.Value(1)).current;
 
-    useEffect(() => {
-        getCardsFromDB(id);
-        // getFile();
-    }, []);
+    // useEffect(() => {
+    //     // set the listCards by calling this below method
+    //     getCardsFromDB(id);
+    //     setShowPracticeButton(false);
+    //     setInitialCardCount(listCards.length);
+
+        
+    // }, []);
 
     useEffect(() => {
-        if (listCards.length === 0) {
-            setShowPracticeButton(true);
-        }
+        const fetchData = async () => {
+            // set the listCards by calling this below method
+            await getCardsFromDB(id);
+            setShowPracticeButton(false);
+        setRemember(0); // Reset swipedRightCount
+
+        };
+        fetchData();
+
+    },[id]);
+
+    useEffect(() => {
+        return(
+            console.log("use effect" + initialCardCount)
+        )
     }, [listCards]);
 
     const panResponder = PanResponder.create({
@@ -82,45 +98,47 @@ function Lesson({navigation, route}) {
 })
 
     const removeTopCard = useCallback((direction)=>{
-    if(direction === 1){
-        setListCards((currState)=> currState.slice(1));
-        // if (listCards.length === 0) {
-        //     setShowPracticeButton(true);
-        // }
-    } else if (direction === -1){
-        setListCards((currState)=> [...currState.slice(1), currState[0]]);
-    }
-    swipe.setValue({ x: 0, y: 0});
+        if(direction === 1){
+            setListCards((currState)=> currState.slice(1));
+            setRemember(remember + 1); // Increment
+            if (initialCardCount-1 === remember) {
+                setShowPracticeButton(true);
+            }
+            console.log(remember);
+        } else if (direction === -1){
+            setListCards((currState)=> [...currState.slice(1), currState[0]]);
+        }
+        swipe.setValue({ x: 0, y: 0});
 
-    },[swipe]);
+        },[swipe, remember]);
     
     // handle user choice (left or right swipe)
-    const handleChoice = useCallback((direction)=>{
-    Animated.timing(swipe.x, {
-        toValue: direction  * 500,
-        duration: 400,
-        useNativeDriver: true
-    }).start(()=>removeTopCard(direction));
-    },[removeTopCard,swipe.x]);
+    // const handleChoice = useCallback((direction)=>{
+    //     Animated.timing(swipe.x, {
+    //         toValue: direction * 500,
+    //         duration: 400,
+    //         useNativeDriver: true
+    //     }).start(() => removeTopCard(direction));
+    //     },[removeTopCard,swipe.x]);
 
-    const getFile = async () => {
-        try {
-            let { data: file, error } = await supabase
-                .from('lesson')
-                .select('file')
-                .eq('', id)
-            // console.log(fileName);
-            const { data } = await supabase
-                .storage
-                .from("files")
-                .getPublicUrl(`${file[0].file}`);
-            if (data) {
-                setFile(data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    // const getFile = async () => {
+    //     try {
+    //         let { data: file, error } = await supabase
+    //             .from('lesson')
+    //             .select('file')
+    //             .eq('', id)
+    //         const { data } = await supabase
+    //             .storage
+    //             .from("files")
+    //             .getPublicUrl(`${file[0].file}`);
+    //         if (data) {
+    //             setFile(data);
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // };
+
     // const handleImagePress = () => {
     //     setShowImage(!showImage);
     // };
@@ -138,9 +156,8 @@ function Lesson({navigation, route}) {
           .from('card')
           .select('czech, vietnamese, picture')
           .eq('lesson_id', lesson_id);
-          
         setListCards(cards);
-        // setInitialCardCount(cards.length);
+        setInitialCardCount(cards.length);
     };
 
         
@@ -156,7 +173,6 @@ function Lesson({navigation, route}) {
     return (
         <SafeAreaView style={styles.template}>
             <Text>{id} - {name}</Text>
-
             {
                 listCards.map(({czech, vietnamese, picture}, index) => {
                     const isFirst = index === 0;

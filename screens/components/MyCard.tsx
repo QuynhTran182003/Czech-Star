@@ -59,35 +59,29 @@ const MyCard = ({ czech, vietnamese, picture, isFirst, swipe, titlSign, ...rest}
     },[rememberOpacity, reviseOpacity])
 
     const imagePath = BackgroundImage.GetImage(`${picture}.png`);
+    
     return (
         <Animated.View style={[
             styles.container,
-            isFirst && animatedCardStyle
+            isFirst && animatedCardStyle, styles.whiteBg
             ]} {...rest}>
-                <View style={styles.imgContainer}>
+            <View style={[styles.imgContainer, styles.images]}>
+                <Image source={imagePath} style={styles.images} />
+            </View>
 
-                    <Image source={imagePath} style={styles.images} />
-
-                </View>
-            {/* <Image source={require(imagePath)} style={styles.images}/> */}
-            {/* <Image source={require('../assets/adaptive-icon.png')} style={styles.images} /> */}
             <View style={styles.whiteBg}>
                 <View style={styles.row}>
-                    {/* <Image source={require('../../assets/icons/czech-republic.png')} /> */}
                     <Image source={BackgroundImage.GetImage('czech-republic.png')} />
                     <Text> Czech: {czech}</Text>
                 </View>
 
                 <View style={styles.row}>
-                    {/* <Image source={require('../../assets/icons/vietnam.png')} /> */}
                     <Image source={BackgroundImage.GetImage('vietnam.png')} />
 
                     <Text> Vietnamese: {vietnamese}</Text>
                 </View>
 
             </View>
-                <Text>{imagePath}</Text>
-
             {isFirst && renderChoice()}
         </Animated.View>
     );
@@ -100,7 +94,7 @@ const styles = StyleSheet.create({
     },
     images: {
         // width: width,
-        // height: height * 0.4,
+        // height: height * 0.5,
     },
     imgContainer: {
         padding: 20,

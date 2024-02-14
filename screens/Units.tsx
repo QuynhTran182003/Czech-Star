@@ -2,18 +2,12 @@ import { FlatList, SafeAreaView, StyleSheet, Text, View , Image, TouchableOpacit
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import styles from "../style";
-
-
-// import calendar_white from '../assets/icons/calendar_white.png';
-// import numbers_white from '../assets/icons/numbers_white.png';
-// import favicon from '../assets/icons/favicon.png';
 import { BackgroundImage } from "./components/Image";
 
 
 function Units({navigation, route}) {
     const { id, name, description } = route.params;
     const [units, setUnits] = useState([]);
-    // const [icon, setIcon] = useState([]);
     
     useEffect(() => {
         getUnitsByLevel(id);
@@ -33,9 +27,6 @@ function Units({navigation, route}) {
     //     numbers_white: numbers_white,
     //     favicon: favicon,
     // };
-
-    // const iconPath = BackgroundImage.GetImage(`${picture}.png`);
-
 
     return (
         <SafeAreaView style={styles.template}>

@@ -12,7 +12,6 @@ interface Image {
       {
         name: 'two.png',
         image: require('../../assets/imgs/two.png'),
-
       },
       {
         name: 'three.png',
@@ -27,9 +26,56 @@ interface Image {
         image: require('../../assets/imgs/five.png'),
       },
       {
+        name: 'first.png',
+        image: require('../../assets/imgs/first.png'),
+      },
+      {
+        name: 'second.png',
+        image: require('../../assets/imgs/second.png'),
+      },
+      {
+        name: 'third.png',
+        image: require('../../assets/imgs/third.png'),
+      },
+      {
+        name: 'fourth.png',
+        image: require('../../assets/imgs/fourth.png'),
+      },
+      {
+        name: 'fifth.png',
+        image: require('../../assets/imgs/fifth.png'),
+      },
+      {
+        name: 'monday.png',
+        image: require('../../assets/imgs/monday.png'),
+      },
+      {
+        name: 'tuesday.png',
+        image: require('../../assets/imgs/tuesday.png'),
+      },
+      {
+        name: 'wednesday.png',
+        image: require('../../assets/imgs/wednesday.png'),
+      },
+      {
+        name: 'thursday.png',
+        image: require('../../assets/imgs/thursday.png'),
+      },
+      {
+        name: 'friday.png',
+        image: require('../../assets/imgs/friday.png'),
+      },
+      {
+        name: 'saturday.png',
+        image: require('../../assets/imgs/saturday.png'),
+      },
+      {
+        name: 'sunday.png',
+        image: require('../../assets/imgs/sunday.png'),
+      },
+      {
         name: 'calendar_white.png',
         image: require('../../assets/icons/calendar_white.png'),
-        
       },
       {
         name: 'czech-republic.png',
