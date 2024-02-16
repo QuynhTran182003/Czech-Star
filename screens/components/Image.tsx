@@ -26,6 +26,58 @@ interface Image {
         image: require('../../assets/imgs/five.png'),
       },
       {
+        name: 'six.png',
+        image: require('../../assets/imgs/six.png'),
+      },
+      {
+        name: 'seven.png',
+        image: require('../../assets/imgs/seven.png'),
+      },
+      {
+        name: 'eight.png',
+        image: require('../../assets/imgs/eight.png'),
+      },
+      {
+        name: 'nine.png',
+        image: require('../../assets/imgs/nine.png'),
+      },
+      {
+        name: 'ten.png',
+        image: require('../../assets/imgs/ten.png'),
+      },
+      {
+        name: 'eleven.png',
+        image: require('../../assets/imgs/eleven.png'),
+      },
+      {
+        name: 'fifteen.png',
+        image: require('../../assets/imgs/fifteen.png'),
+      },
+      {
+        name: 'nineteen.png',
+        image: require('../../assets/imgs/nineteen.png'),
+      },
+      {
+        name: 'twenty.png',
+        image: require('../../assets/imgs/twenty.png'),
+      },
+      {
+        name: 'thirty.png',
+        image: require('../../assets/imgs/thirty.png'),
+      },
+      {
+        name: 'fifty.png',
+        image: require('../../assets/imgs/fifty.png'),
+      },
+      {
+        name: 'sixty.png',
+        image: require('../../assets/imgs/sixty.png'),
+      },
+      {
+        name: 'ninety.png',
+        image: require('../../assets/imgs/ninety.png'),
+      },
+      {
         name: 'first.png',
         image: require('../../assets/imgs/first.png'),
       },
@@ -74,16 +126,16 @@ interface Image {
         image: require('../../assets/imgs/sunday.png'),
       },
       {
-        name: 'calendar_white.png',
-        image: require('../../assets/icons/calendar_white.png'),
+        name: 'calendar.png',
+        image: require('../../assets/icons/calendar.png'),
       },
       {
         name: 'czech-republic.png',
         image: require('../../assets/icons/czech-republic.png'),
       },
       {
-        name: 'numbers_white.png',
-        image: require('../../assets/icons/numbers_white.png'),
+        name: 'numbers.png',
+        image: require('../../assets/icons/numbers.png'),
       },
       {
         name: 'vietnam.png',
