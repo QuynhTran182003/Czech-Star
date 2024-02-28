@@ -20,6 +20,9 @@ const styles = StyleSheet.create({
     bold_text: {
         fontWeight: 'bold',
     },
+    text_m:{
+        fontSize: 18,
+    },
     header:{
         fontSize: 32,
     },
@@ -45,7 +48,7 @@ const styles = StyleSheet.create({
     },
     borderBot:{
         borderBottomWidth: 1,
-        borderBottomColor: 'gray',
+        borderBottomColor: 'white',
         borderStyle: 'solid',
     },
 

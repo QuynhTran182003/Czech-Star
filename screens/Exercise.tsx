@@ -2,23 +2,35 @@ import { FlatList, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, Image
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import styles from "../style";
-import Word from "./classes/Word";
 import { LinearGradient } from "expo-linear-gradient";
 import { BackgroundImage } from "./components/Image";
-async function Exercise({ navigation, route }) {
+import Word from "./classes/Word";
+import { FlipInEasyX } from "react-native-reanimated";
+
+
+function Exercise({ navigation, route }) {
     const { lessonid, lessonname } = route.params;
     const [listCards, setListCards] = useState([]);
-    const [exercise, setExercise] = useState([]);
-  
+    const [showExercicse, setShowExercise] = useState(false);
+    const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            headerStyle: { backgroundColor: 'rgba(134,0,180,1)' },
+            headerTintColor: '#fff',
+        });
+    }, [navigation]);
+
     useEffect(() => {
-        // console.log(getCardsFromDB(lessonid));
-        // console.log(listCards);
+        const fetchData = async () => {
+            // set the listCards by calling this below method
+            await getCardsFromDB(lessonid);
+            setShowExercise(true);
+        };
+        fetchData();
 
-        // console.log(getRandomWordFromDatabase());
-        // console.log("igi")
-        // createExercise();
-
-    }, [exercise]);
+    }, []);
 
     async function getCardsFromDB (lesson_id) {
         let { data: cards, error } = await supabase
@@ -26,15 +38,17 @@ async function Exercise({ navigation, route }) {
           .select("czech, vietnamese, picture")
           .eq("lesson_id", lesson_id);
         setListCards(cards);
-        // return listCards;
     }
 
     function getRandomWordFromDatabase() {
     //     const fetchData = await getCardsFromDB(lessonid);
         const randomIndex = Math.floor(Math.random() * listCards.length);
+        if (listCards[randomIndex] != undefined) {
+            // console.log(listCards[randomIndex].czech);
+            // console.log(listCards[randomIndex].vietnamese);
+            return new Word(listCards[randomIndex].czech, listCards[randomIndex].vietnamese, listCards[randomIndex].picture);
+        }
         //return json word object with czech, vietnamese, picture attributes
-
-        return new Word(listCards[randomIndex].czech, listCards[randomIndex].vietnamese, listCards[randomIndex].picture);
     }
 
     function getIncorrectAnswers(word: any) {
@@ -59,76 +73,82 @@ async function Exercise({ navigation, route }) {
         return array;
     }
 
-    // function createExercise() {
+    function createExercise() {
+    // get random word from database
+    // get incorrect answers
+    // shuffle answers
 
-    //     let word = getRandomWordFromDatabase(); // return json word object with czech, vietnamese, picture attributes
-    //     // let word = new Word(jsonWord.czech, jsonWord.vietnamese, jsonWord.picture)
-    //     // console.log(jsonWord.czech);
-    //     // console.log(word);x
-    //     // let word ;
-    //     // getRandomWordFromDatabase().then((jsonWord) => {
-    //         // console.log(jsonWord);
-    //         // word = new Word(jsonWord.czech, jsonWord.vietnamese, jsonWord.picture);
-    //     //   });
-    //     const incorrectAnswers = getIncorrectAnswers(word); 
-    //     //return array of 4 answers
-    //     const allAnswers = [word.czech, ...incorrectAnswers];
-    //     const shuffledAnswers = shuffleArray(allAnswers);
-    //     const imagePath = BackgroundImage.GetImage(`${word.picture}.png`);
-    //     return (
-    //         <View>
-    //             <Image source={imagePath} style={{ width: 200, height: 200 }} />
+        let word = getRandomWordFromDatabase(); // return json word object with czech, vietnamese, picture attributes
+        const incorrectAnswers = getIncorrectAnswers(word); 
+        //return array of 4 answers
+        const allAnswers = [word.czech, ...incorrectAnswers];
+        const shuffledAnswers = shuffleArray(allAnswers);
+        const imagePath = BackgroundImage.GetImage(`${word.picture}.png`);
+        // console.log("Shuffled ans: " + shuffledAnswers);
 
-    //             <Text>{word.vietnamese}</Text>
-    //             <FlatList
-    //                 data={shuffledAnswers}
-    //                 renderItem={({ item }) => (
-    //                     <TouchableOpacity>
-    //                         <Text>{item}</Text>
-    //                     </TouchableOpacity>
-    //                 )}
-    //             />
-    //         </View>
-    //     );
-    // }
-    
-    async function createExercise() {
-        try {
-            await getCardsFromDB(lessonid);
-            const word = getRandomWordFromDatabase();
-            
-            const incorrectAnswers = getIncorrectAnswers(word);
-            const allAnswers = [word.czech, ...incorrectAnswers];
-            const shuffledAnswers = shuffleArray(allAnswers);
-    
-            const imagePath = BackgroundImage.GetImage(`${word.picture}.png`);
-            return (
-                <View>
-                    <Image source={imagePath} style={{ width: 200, height: 200 }} />
-                    <Text>{word.vietnamese}</Text>
-                    <FlatList
-                        data={shuffledAnswers}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity>
-                                <Text>{item}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
+        return (
+            <View>
+                <View style={[styles.paddingY]}>
+                    <View style={[styles.container, styles.paddingY, styles.margin2X, styles.borderBot]}>
+                        <Image source={imagePath} style={[{ width: 200, height: 200}, styles.margin2Y]} />
+                    </View>
+                    <View style={[styles.container, styles.margin2Y, styles.margin2X, styles.padding2X, styles.paddingY, styleCustom.blurredBg]}>
+                        <Text style={[styles.subheading, styles.padding2X, styles.marginY, styles.bold_text, styles.white_text]}>{word.vietnamese}</Text>
+                    </View>
                 </View>
-            );
-        } catch (error) {
-            console.error("Error creating exercise:", error);
-            // Handle the error as needed
-        }
+                
+                {/* <Text>{word.czech}</Text> */}
+                <FlatList
+                    data={shuffledAnswers}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity 
+                            onPress={
+                                ()=> 
+                                checkAnswer(item, word)
+                            }
+                            style={
+                                // [styleCustom.answers, styles.padding2X, styles.padding2Y, styles.marginY,styles.margin2X]
+                                [
+                                    styleCustom.answers,
+                                    styles.padding2X,
+                                    styles.padding2Y,
+                                    styles.marginY,
+                                    styles.margin2X,
+                                    selectedAnswer ? styleCustom.correctAnswer : styleCustom.incorrectAnswer // Apply green background if checkAnswer is true
+                                  ]
+                            }
+                            >
+                            <Text style={[{flex:1, textAlign:"center"}, styles.bold_text, styles.text_m]}>{item}</Text>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item.toString()}
+                    numColumns={2}
+                />
+            </View>
+        );
     }
     
-    // Usage example
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerStyle: { backgroundColor: 'rgba(134,0,180,1)' },
-            headerTintColor: '#fff',
-        });
-    }, [navigation]);
+    function checkAnswer(answer: string, word: Word) {
+        if (answer === word.czech) {
+            setSelectedAnswer(true)
+            console.log("Correct");
+            // setIsCorrectAnswer(true);
+            return true;
+        } else {
+            setSelectedAnswer(false)
+            console.log("Incorrect");
+            // setIsCorrectAnswer(false);
+            return false;
+        }
+    }
+
+    const renderExercises = () => {
+        // const exercises = [];
+        for (let i = 0; i < 8; i++) {
+            return createExercise();
+        }
+        // return exercises;
+      };
 
     return (
         <LinearGradient
@@ -140,15 +160,42 @@ async function Exercise({ navigation, route }) {
             style={styles.linearGradient}
         >
             <SafeAreaView style={styles.template}>
-                <Text>Welcome to practice {lessonid} {lessonname} </Text>
-                <View>
-                    {await createExercise()}
-                </View>
+                {/* <Text>Welcome to practice {lessonid} {lessonname} </Text> */}
+                {
+                    showExercicse && (createExercise())
+                    // renderExercises()
+                }
             </SafeAreaView>
         </LinearGradient>
     )
+
 }
 
+const styleCustom = StyleSheet.create({
+    answers:{
+        flex:3,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        borderRadius:50,
+        backgroundColor:"white"
+    },
+    correctAnswer:{
+        backgroundColor: 'lightgreen',
+    },
+    incorrectAnswer:{
+        backgroundColor: 'red',
+    },
+    whiteBg:{
+        backgroundColor: '#80b9ff',
+        borderRadius: 20,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    
+    },
+    blurredBg: {
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        borderRadius: 20
+    }
+})
 export default Exercise;
-
-
