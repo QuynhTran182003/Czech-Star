@@ -14,7 +14,10 @@ function Exercise({ navigation, route }) {
     const [showExercicse, setShowExercise] = useState(false);
     const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
-
+    const [listQuiz, setListQuiz] = useState([]);
+    const [currentIndexQuiz, setCurrentIndexQuiz] = useState(0);
+    const [score, setScore] = useState(0);
+    
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerStyle: { backgroundColor: 'rgba(134,0,180,1)' },
@@ -103,8 +106,10 @@ function Exercise({ navigation, route }) {
                     renderItem={({ item }) => (
                         <TouchableOpacity 
                             onPress={
-                                ()=> 
-                                checkAnswer(item, word)
+                                ()=> {
+                                    checkAnswer(item, word)
+                                    createExercise()
+                                }
                             }
                             style={
                                 // [styleCustom.answers, styles.padding2X, styles.padding2Y, styles.marginY,styles.margin2X]
@@ -143,9 +148,10 @@ function Exercise({ navigation, route }) {
     }
 
     const renderExercises = () => {
-        // const exercises = [];
+    
         for (let i = 0; i < 8; i++) {
-            return createExercise();
+            // return createExercise();
+            setListQuiz([...listQuiz, createExercise()]);
         }
         // return exercises;
       };

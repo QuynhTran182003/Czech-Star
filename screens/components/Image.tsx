@@ -125,6 +125,56 @@ interface Image {
         name: 'sunday.png',
         image: require('../../assets/imgs/sunday.png'),
       },
+
+      {
+        name: 'january.png',
+        image: require('../../assets/imgs/january.png'),
+      },
+      // {
+      //   name: 'febuary.png',
+      //   image: require('../../assets/imgs/febuary.png'),
+      // },
+      {
+        name: 'march.png',
+        image: require('../../assets/imgs/march.png'),
+      },
+      {
+        name: 'april.png',
+        image: require('../../assets/imgs/april.png'),
+      },
+      {
+        name: 'may.png',
+        image: require('../../assets/imgs/may.png'),
+      },
+      {
+        name: 'june.png',
+        image: require('../../assets/imgs/june.png'),
+      },
+      {
+        name: 'july.png',
+        image: require('../../assets/imgs/july.png'),
+      },
+      {
+        name: 'august.png',
+        image: require('../../assets/imgs/august.png'),
+      },
+      {
+        name: 'september.png',
+        image: require('../../assets/imgs/september.png'),
+      },
+      {
+        name: 'october.png',
+        image: require('../../assets/imgs/october.png'),
+      },
+      {
+        name: 'november.png',
+        image: require('../../assets/imgs/november.png'),
+      },
+      {
+        name: 'december.png',
+        image: require('../../assets/imgs/december.png'),
+      },
+
       {
         name: 'calendar.png',
         image: require('../../assets/icons/calendar.png'),
