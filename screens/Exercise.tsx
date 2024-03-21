@@ -1,4 +1,4 @@
-import { FlatList, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, Image, Dimensions, Linking } from "react-native";
+import { FlatList, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, Image, Alert, Dimensions, Linking } from "react-native";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import styles from "../style";
@@ -17,7 +17,7 @@ function Exercise({ navigation, route }) {
     const [listQuiz, setListQuiz] = useState([]);
     const [currentIndexQuiz, setCurrentIndexQuiz] = useState(0);
     const [score, setScore] = useState(0);
-    
+
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerStyle: { backgroundColor: 'rgba(134,0,180,1)' },
@@ -32,8 +32,12 @@ function Exercise({ navigation, route }) {
             setShowExercise(true);
         };
         fetchData();
-
+        for (let i = 0; i < 10; i++) {
+            listQuiz.push(getRandomWordFromDatabase);
+        }
     }, []);
+
+
 
     async function getCardsFromDB (lesson_id) {
         let { data: cards, error } = await supabase
@@ -43,6 +47,7 @@ function Exercise({ navigation, route }) {
         setListCards(cards);
     }
 
+    //return a new Word object with czech, vietnamese, picture attributes
     function getRandomWordFromDatabase() {
     //     const fetchData = await getCardsFromDB(lessonid);
         const randomIndex = Math.floor(Math.random() * listCards.length);
@@ -76,11 +81,88 @@ function Exercise({ navigation, route }) {
         return array;
     }
 
+    function checkAnswer(answer: string, word: Word) {
+        if (answer === word.czech) {
+            setSelectedAnswer(true)
+            console.log("Correct");
+            Alert.alert(
+                'Correct Answer',
+                'Good job!',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                ],
+                {
+                  cancelable: true,
+                  onDismiss: () =>
+                    Alert.alert(
+                      'This alert was dismissed by tapping outside of the alert dialog.',
+                    ),
+                },
+              );
+            // setIsCorrectAnswer(true);
+            return true;
+        } else {
+            setSelectedAnswer(false)
+            console.log("Incorrect");
+            Alert.alert(
+                'Wrong Answer',
+                'The result is : asdf',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                ],
+                {
+                  cancelable: true,
+                  onDismiss: () =>
+                    Alert.alert(
+                      'This alert was dismissed by tapping outside of the alert dialog.',
+                    ),
+                },
+              );
+            // setIsCorrectAnswer(false);
+            return false;
+        }
+    }
+
+    function UpdateExercise(){
+        console.log("Update exercise" + currentIndexQuiz + "/ " + listQuiz.length);
+        if (currentIndexQuiz < listQuiz.length - 1){
+            setCurrentIndexQuiz(currentIndexQuiz + 1);
+        }
+        else{
+            console.log("End of exercise");
+            Alert.alert(
+                'Out of quiz',
+                'success: , failure: ',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                ],
+                {
+                  cancelable: true,
+                  onDismiss: () =>
+                    Alert.alert(
+                      'This alert was dismissed by tapping outside of the alert dialog.',
+                    ),
+                },
+              );
+              setShowExercise(false)
+            // show score
+            // show button to go back to lesson
+        }
+    }
     function createExercise() {
     // get random word from database
     // get incorrect answers
     // shuffle answers
-
+        console.log("Create exercise");
         let word = getRandomWordFromDatabase(); // return json word object with czech, vietnamese, picture attributes
         const incorrectAnswers = getIncorrectAnswers(word); 
         //return array of 4 answers
@@ -108,7 +190,7 @@ function Exercise({ navigation, route }) {
                             onPress={
                                 ()=> {
                                     checkAnswer(item, word)
-                                    createExercise()
+                                    UpdateExercise()
                                 }
                             }
                             style={
@@ -119,7 +201,7 @@ function Exercise({ navigation, route }) {
                                     styles.padding2Y,
                                     styles.marginY,
                                     styles.margin2X,
-                                    selectedAnswer ? styleCustom.correctAnswer : styleCustom.incorrectAnswer // Apply green background if checkAnswer is true
+                                    // selectedAnswer ? styleCustom.correctAnswer : styleCustom.incorrectAnswer // Apply green background if checkAnswer is true
                                   ]
                             }
                             >
@@ -133,28 +215,7 @@ function Exercise({ navigation, route }) {
         );
     }
     
-    function checkAnswer(answer: string, word: Word) {
-        if (answer === word.czech) {
-            setSelectedAnswer(true)
-            console.log("Correct");
-            // setIsCorrectAnswer(true);
-            return true;
-        } else {
-            setSelectedAnswer(false)
-            console.log("Incorrect");
-            // setIsCorrectAnswer(false);
-            return false;
-        }
-    }
-
-    const renderExercises = () => {
     
-        for (let i = 0; i < 8; i++) {
-            // return createExercise();
-            setListQuiz([...listQuiz, createExercise()]);
-        }
-        // return exercises;
-      };
 
     return (
         <LinearGradient
@@ -167,10 +228,18 @@ function Exercise({ navigation, route }) {
         >
             <SafeAreaView style={styles.template}>
                 {/* <Text>Welcome to practice {lessonid} {lessonname} </Text> */}
+                <View>
+                    {
+                        showExercicse && (createExercise())
+                    }
+                </View>
+                <View>
+
                 {
-                    showExercicse && (createExercise())
-                    // renderExercises()
+                    
                 }
+                </View>
+                
             </SafeAreaView>
         </LinearGradient>
     )

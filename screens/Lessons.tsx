@@ -10,6 +10,7 @@ function Lessons({ navigation, route }) {
     const [lessons, setLessons] = useState([]);
     const windowWidth = Dimensions.get('window').width;
     const [showImage, setShowImage] = useState(false);
+    
     useEffect(() => {
         getLessons(id);
         // getFile();
