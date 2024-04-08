@@ -46,7 +46,7 @@ const MyCard = ({ czech, vietnamese, picture, isFirst, swipe, titlSign, ...rest 
                         styleCustom.rememContainer,
                         { opacity: rememberOpacity }
                     ]}>
-                    <Choice type="remember" />
+                    <Choice type="GetIt" />
                 </Animated.View>
                 <Animated.View
                     style={[

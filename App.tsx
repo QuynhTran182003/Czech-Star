@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LevelList from './screens/Levels'
+import UnitExam from './screens/Unit_exam'
 import Units from './screens/Units'
 import Lessons from './screens/Lessons'
 import Lesson from './screens/Lesson'
@@ -39,6 +40,7 @@ export default function App() {
         <Stack.Screen name="Lesson" component={Lesson}/>
         <Stack.Screen name="Exercise" component={Exercise}/>
         <Stack.Screen name="Grammar" component={Grammar}/>
+        <Stack.Screen name="UnitExam" component={UnitExam}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

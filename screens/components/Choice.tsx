@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 
 const COLORS = {
-    remember: '#00eda6',
+    GetIt: '#00eda6',
     revise: '#ff006f'
 }
 

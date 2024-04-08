@@ -7,18 +7,16 @@ import { BackgroundImage } from "./components/Image";
 import Word from "./classes/Word";
 
 
-function Exercise({ navigation, route }) {
-    const { lessonid, lessonname } = route.params;
+function UnitExam({ navigation, route }) {
+    const { id, name } = route.params;
     const [listCards, setListCards] = useState([]);
-    const [showExercicse, setShowExercise] = useState(false);
     const [listQuiz, setListQuiz] = useState([]);
     const [currentIndexQuiz, setCurrentIndexQuiz] = useState(0);
     const [correctAns, setCorrectAns] = useState(0);
     const [incorrectAns, setIncorrectAns] = useState(0);
-
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [correctAnswer, setCorrectAnswer] = useState(null);
+    const [showExercicse, setShowExercise] = useState(false);
     const [exerciseCreated, setExerciseCreated] = useState(false);
+    const [correctAnswer, setCorrectAnswer] = useState(null);
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -28,42 +26,32 @@ function Exercise({ navigation, route }) {
     }, [navigation]);
 
     useEffect(() => {
+        // Fetch cards from the database when the component mounts
         const fetchData = async () => {
             // set the listCards by calling this below method
-            await getCardsFromDB(lessonid);
+            await getCardsFromDB(id);
 
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 15; i++) {
                 listQuiz.push(getRandomWordFromDatabase);
             }
-            setShowExercise(true);
-            setListQuiz(listQuiz);
-            setExerciseCreated(true);
-        };
-        fetchData();
-        
-    }, listQuiz);
-
-
-
-    async function getCardsFromDB (lesson_id) {
-        let { data: cards, error } = await supabase
-          .from("card")
-          .select("czech, vietnamese, picture")
-          .eq("lesson_id", lesson_id);
-        setListCards(cards);
-    }
-
-    //return a new Word object with czech, vietnamese, picture attributes
-    function getRandomWordFromDatabase() {
-    //     const fetchData = await getCardsFromDB(lessonid);
-        const randomIndex = Math.floor(Math.random() * listCards.length);
-        if (listCards[randomIndex] != undefined) {
-            // console.log(listCards[randomIndex].czech);
-            // console.log(listCards[randomIndex].vietnamese);
-            return new Word(listCards[randomIndex].czech, listCards[randomIndex].vietnamese, listCards[randomIndex].picture);
+        // console.log(listQuiz);
+        setShowExercise(true);
+        setListQuiz(listQuiz);
+        setExerciseCreated(true);
         }
-        //return json word object with czech, vietnamese, picture attributes
-    }
+        fetchData();
+    }, []);
+
+    function getRandomWordFromDatabase() {
+        //     const fetchData = await getCardsFromDB(lessonid);
+            const randomIndex = Math.floor(Math.random() * listCards.length);
+            if (listCards[randomIndex] != undefined) {
+                // console.log(listCards[randomIndex].czech);
+                // console.log(listCards[randomIndex].vietnamese);
+                return new Word(listCards[randomIndex].czech, listCards[randomIndex].vietnamese, listCards[randomIndex].picture);
+            }
+            //return json word object with czech, vietnamese, picture attributes
+        }
 
     function getIncorrectAnswers(word: any) {
         const allCzechWords = listCards.map((card) => card.czech);
@@ -86,10 +74,8 @@ function Exercise({ navigation, route }) {
         }
         return array;
     }
-
-    // check answer, alert and update exercise
     function checkAnswer(answer: string, word: Word) {
-        setSelectedAnswer(answer);
+        // setSelectedAnswer(answer);
         let res = false;
         if (answer === word.czech) {
             setCorrectAnswer(answer);
@@ -139,12 +125,11 @@ function Exercise({ navigation, route }) {
             
             res = false;
         }
-        UpdateExercise();
+        UpdateQuiz();
         return res;
-}
+    }
 
-    // check if the exercise is finished then alert with achieved procent, otherwise update the exercise, increment the index
-    function UpdateExercise(){
+    function UpdateQuiz(){
         console.log("Update exercise" + currentIndexQuiz + "/ " + listQuiz.length);
         if (currentIndexQuiz < listQuiz.length - 1){
             setCurrentIndexQuiz(currentIndexQuiz + 1);
@@ -174,6 +159,7 @@ function Exercise({ navigation, route }) {
             // show button to go back to lesson
         }
     }
+
     function createExercise() {
     // get random word from database
     // get incorrect answers
@@ -205,7 +191,7 @@ function Exercise({ navigation, route }) {
                         <TouchableOpacity 
                             onPress={
                                 ()=> {
-                                    checkAnswer(item, word)
+                                     checkAnswer(item, word)
                                 }
                             }
                             style={
@@ -229,6 +215,40 @@ function Exercise({ navigation, route }) {
             </View>
         );
     }
+    async function getCardsFromDB (id) {
+        try {
+            // First, query the lesson table to get the IDs of lessons belonging to the given unitId
+            const { data: lessons, error: lessonError } = await supabase
+                .from("lesson")
+                .select("id")
+                .eq("unit_id", id);
+    
+            if (lessonError) {
+                throw lessonError;
+            }
+    
+            // Extract the lesson IDs from the response
+            const lessonIds = lessons.map(lesson => lesson.id);
+    
+            // Use the lesson IDs to fetch cards from the card table
+            const { data: cards, error: cardError } = await supabase
+                .from("card")
+                .select("czech, vietnamese, picture")
+                .in("lesson_id", lessonIds);
+    
+            if (cardError) {
+                throw cardError;
+            }
+    
+            // Set the fetched cards to state or handle them as needed
+            setListCards(cards);
+        } catch (error) {
+            console.error("Error fetching cards:", error);
+            // Handle error appropriately
+        }
+    }
+
+    
 
     return (
         <LinearGradient
@@ -240,11 +260,11 @@ function Exercise({ navigation, route }) {
             style={styles.linearGradient}
         >
             <SafeAreaView style={styles.template}>
-                {/* <Text>Welcome to practice {lessonid} {lessonname} </Text> */}
+                <Text>Welcome to practice {id} {name} </Text>
                 <View>
                     {
-                        // showExercicse && (createExercise())
                         exerciseCreated && showExercicse && (createExercise())
+
                     }
                 </View>
             </SafeAreaView>
@@ -280,4 +300,4 @@ const styleCustom = StyleSheet.create({
         borderRadius: 20
     }
 })
-export default Exercise;
+export default UnitExam;

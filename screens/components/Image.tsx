@@ -174,7 +174,38 @@ interface Image {
         name: 'december.png',
         image: require('../../assets/imgs/december.png'),
       },
-
+      {
+        name: 'myself.png',
+        image: require('../../assets/imgs/myself.png'),
+      },
+      {
+        name: 'you.png',
+        image: require('../../assets/imgs/you.png'),
+      },
+      {
+        name: 'we.png',
+        image: require('../../assets/imgs/we.png'),
+      },
+      {
+        name: 'they.png',
+        image: require('../../assets/imgs/they.png'),
+      },
+      {
+        name: 'you2.png',
+        image: require('../../assets/imgs/you2.png'),
+      },{
+        name: 'her.png',
+        image: require('../../assets/imgs/her.png'),
+      },
+//icons
+      {
+        name: 'person.png',
+        image: require('../../assets/icons/person.png'),
+      },
+      {
+        name: 'conversation.png',
+        image: require('../../assets/icons/conversation.png'),
+      },
       {
         name: 'calendar.png',
         image: require('../../assets/icons/calendar.png'),
@@ -195,6 +226,7 @@ interface Image {
         name: 'favicon.png',
         image: require('../../assets/icons/favicon.png'),
       },
+      
     ];
   
     static GetImage = (name: string) => {

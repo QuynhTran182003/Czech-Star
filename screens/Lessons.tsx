@@ -79,7 +79,7 @@ function Lessons({ navigation, route }) {
                 </View>
                 <View>
                     <TouchableOpacity style={[styles.btn, styles.padding2X, styles.paddingY]}>
-                        <Text style={[styles.white_text, styles.bold]}>Units Exam</Text>
+                        <Text style={[styles.white_text, styles.bold]} onPress={() => navigation.navigate('UnitExam', { id: id, name: name })}>Units Exam</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
